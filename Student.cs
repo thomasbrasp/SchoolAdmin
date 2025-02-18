@@ -81,6 +81,7 @@ namespace SchoolAdmin
             }
             Console.WriteLine($"Gemiddelde:\t{this.Average():F1}\n");
         }
+        
 
 
     }
