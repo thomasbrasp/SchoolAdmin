@@ -1,80 +1,87 @@
-namespace SchoolAdmin;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class Student
+namespace SchoolAdmin
 {
-    public string Name;
-    public DateTime Birthdate;
-    public uint StudentNumber;
-    private List<CourseResult> courseResults = new List<CourseResult>();
-    public static uint StudentCounter = 1;
-    
-
-    public string GenerateNameCard()
+    internal class Student
     {
-        return $"{Name} (STUDENT)";
-    }
-    public byte DetermineWorkLoad()
-    {
-        byte counter = 0;
-        foreach (var course in courseResults)
+        public string Name;
+        public DateTime Birthdate;
+        public uint StudentNumber;
+        private List<CourseResult> courseResults = new List<CourseResult>();
+        public static uint StudentCounter = 1;
+        //nieuw
+        public int Age
         {
-            counter += 10;
-        }
-
-        return counter;
-    }
-    public void RegisterCourseResult(string course, byte result)
-    {
-
-
-        if (result > 20)
-        {
-            Console.WriteLine("Ongeldig cijfer!");
-        }
-        else
-        {
-            bool isFound = false;
-            foreach (var item in courseResults)
+            get
             {
-                if (item.Name == course)
+                DateTime now = DateTime.Now;
+                int numberOfYears = now.Year - this.Birthdate.Year;
+                if (now.Month < this.Birthdate.Month || now.Month == this.Birthdate.Month && now.Day < this.Birthdate.Day)
                 {
-                    isFound = true;
+                    numberOfYears--;
+                }
+                return numberOfYears;
+            }
+        }
+        public string GenerateNameCard()
+        {
+            return $"{this.Name} (STUDENT)";
+        }
+
+        public byte DetermineWorkload()
+        {
+            byte total = 0;
+            foreach (CourseResult course in courseResults)
+            {             
+                if (course is not null)
+                {
+                    total += 10;
                 }
             }
-            if (isFound)
+            return total;
+        }
+
+        public void RegisterCourseResult(string course, byte result)
+        {
+            if (result > 20)
             {
-                Console.WriteLine("Deze course bestaat al");
+                Console.WriteLine("Ongeldig cijfer!");
             }
             else
             {
-                CourseResult newResult = new CourseResult();
-                newResult.Name = course;
-                newResult.Result = result;
-                courseResults.Add(newResult);
+                CourseResult newCourseresult = new CourseResult();
+                newCourseresult.Name = course;
+                newCourseresult.Result = result;
+                courseResults.Add(newCourseresult);
             }
-
         }
-    }
-
-    public double Average()
-    {
-        double sum = 0;
-        int counter = 0;
-        foreach (var item in courseResults)
+        public double Average()
         {
-            counter++;
-            Console.WriteLine($"{item.Name}: {item.Result}");
-            sum += item.Result;
+            double totaal = 0;
+            foreach (CourseResult item in courseResults)
+            {
+                totaal += item.Result;
+            }
+            return totaal / courseResults.Count;
         }
-        return Math.Round((sum / counter), 1);
-    }
+        public void ShowOverview()
+        {
+            //wijziging: toevoeging age
+            Console.WriteLine($"{this.Name} ({Age} jaar)");
+            Console.WriteLine($"Werkbelasting: {DetermineWorkload()} uren");
+            Console.WriteLine("Cijferrapport");
+            Console.WriteLine("*************");
+            foreach (CourseResult item in courseResults)
+            {
+                Console.WriteLine($"{item.Name}:\t{item.Result}");
+            }
+            Console.WriteLine($"Gemiddelde:\t{this.Average():F1}\n");
+        }
 
-    public void ShowOverview()
-    {
-        Console.WriteLine(GenerateNameCard());
-        Console.WriteLine($"Werkbelasting: {DetermineWorkLoad()} uren");
-        Console.WriteLine("Cijferrapport\n************");
-        Console.WriteLine($"Gemiddelde: {Average()}");
-        Console.WriteLine();
+
     }
 }

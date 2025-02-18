@@ -1,7 +1,41 @@
-namespace SchoolAdmin;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class CourseResult
+namespace SchoolAdmin
 {
-    public string Name;
-    public byte Result;
+    internal class CourseResult
+    {
+        private string name;
+        public string Name
+        {
+            get
+            {
+                return this.name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
+        private byte result;
+        public byte Result
+        {
+            get
+            {
+                return result;
+            }
+            set
+            {
+                if (!(value > 20))
+                {
+                    result = value;
+                }
+            }
+        }
+
+    }
 }
